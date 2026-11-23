@@ -3,30 +3,71 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>トヨタ株ページ</title>
+  <title>東証株価検索</title>
   <style>
-    html, body { height: 100%; margin: 0; }
-    body { font-family: sans-serif; display: flex; flex-direction: column; }
-    h1 { font-size: 22px; margin: 12px 16px; }
-    .tradingview-widget-container { flex: 1; min-height: 500px; width: 100%; }
-    .tradingview-widget-container__widget { height: 100%; width: 100%; }
+    body { font-family: sans-serif; margin: 0; padding: 16px; }
+    h1 { font-size: 22px; }
+    input { font-size: 18px; padding: 10px; width: 70%; }
+    button { font-size: 18px; padding: 10px 16px; }
+    #result { margin-top: 20px; font-size: 18px; }
+    #result a { display: inline-block; margin: 6px 0; padding: 12px 16px; background: #2962ff; color: #fff; text-decoration: none; border-radius: 8px; }
+    .list a { background: #eee; color: #222; margin: 4px; padding: 8px 12px; border-radius: 8px; text-decoration: none; display: inline-block; }
   </style>
 </head>
 <body>
-  <h1>トヨタ自動車(TM)の株価</h1>
-  <div class="tradingview-widget-container">
-    <div class="tradingview-widget-container__widget"></div>
-    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
-    {
-      "symbol": "NYSE:TM",
-      "interval": "D",
-      "timezone": "Asia/Tokyo",
-      "theme": "light",
-      "locale": "ja",
-      "width": "100%",
-      "height": "100%"
+  <h1>東証株価検索</h1>
+  <p>会社名か証券コード(4桁)を入力してください。</p>
+  <input id="q" type="text" placeholder="例: トヨタ または 7203">
+  <button onclick="search()">検索</button>
+  <div id="result"></div>
+  <h2>よく見る会社</h2>
+  <div class="list" id="list"></div>
+
+  <script>
+    var companies = {
+      "トヨタ": "7203", "ソニー": "6758", "任天堂": "7974",
+      "ソフトバンクグループ": "9984", "ソフトバンク": "9434",
+      "ホンダ": "7267", "日産": "7201", "三菱UFJ": "8306",
+      "キーエンス": "6861", "ファーストリテイリング": "9983",
+      "ユニクロ": "9983", "東京エレクトロン": "8035",
+      "日立": "6501", "パナソニック": "6752", "KDDI": "9433",
+      "NTT": "9432", "リクルート": "6098", "信越化学": "4063",
+      "三菱商事": "8058", "伊藤忠": "8001", "みずほ": "8411",
+      "三井住友": "8316", "デンソー": "6902", "スズキ": "7269",
+      "スバル": "7270", "マツダ": "7261", "バンダイナムコ": "7832",
+      "カプコン": "9697", "ソニーグループ": "6758", "オリエンタルランド": "4661"
+    };
+
+    function show(code, name) {
+      var url = "https://jp.tradingview.com/chart/?symbol=TSE%3A" + code;
+      document.getElementById("result").innerHTML =
+        "<div>" + name + "(" + code + ")</div>" +
+        "<a href='" + url + "' target='_blank'>東証のチャートを開く</a>";
     }
-    </script>
-  </div>
+
+    function search() {
+      var q = document.getElementById("q").value.trim();
+      var out = document.getElementById("result");
+      if (/^[0-9A-Za-z]{4}$/.test(q)) { show(q.toUpperCase(), "証券コード"); return; }
+      var hits = Object.keys(companies).filter(function (n) { return n.indexOf(q) !== -1 || q.indexOf(n) !== -1; });
+      if (q === "" || hits.length === 0) {
+        out.innerHTML = "見つかりませんでした。証券コード(4桁)で入力してみてください。";
+        return;
+      }
+      show(companies[hits[0]], hits[0]);
+    }
+
+    var list = document.getElementById("list");
+    Object.keys(companies).forEach(function (n) {
+      var a = document.createElement("a");
+      a.href = "#"; a.textContent = n;
+      a.onclick = function (e) { e.preventDefault(); show(companies[n], n); };
+      list.appendChild(a);
+    });
+
+    document.getElementById("q").addEventListener("keydown", function (e) {
+      if (e.key === "Enter") search();
+    });
+  </script>
 </body>
 </html>
