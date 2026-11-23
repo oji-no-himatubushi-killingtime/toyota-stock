@@ -1,1 +1,29 @@
-トヨタ株ページ
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>トヨタ株ページ</title>
+  <style>
+    body { font-family: sans-serif; margin: 0; padding: 16px; }
+    h1 { font-size: 24px; }
+    .chart { height: 500px; }
+  </style>
+</head>
+<body>
+  <h1>トヨタ自動車(7203)の株価</h1>
+  <div class="tradingview-widget-container chart">
+    <div class="tradingview-widget-container__widget" style="height:100%"></div>
+    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+    {
+      "symbol": "TSE:7203",
+      "interval": "D",
+      "timezone": "Asia/Tokyo",
+      "theme": "light",
+      "locale": "ja",
+      "autosize": true
+    }
+    </script>
+  </div>
+</body>
+</html>
